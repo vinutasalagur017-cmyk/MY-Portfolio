@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JavaScript Curriculum Runner</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; }
+  button { margin: 4px; padding: 8px 14px; border: 1px solid #888; border-radius: 6px; cursor: pointer; background: #f4f4f4; }
+  button.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+  pre { background: #111; color: #9ef59e; padding: 1rem; border-radius: 8px; min-height: 160px; white-space: pre-wrap; }
+  small { color: #555; }
+</style>
+</head>
+<body>
+  <h1>JavaScript Curriculum Runner</h1>
+  <p>Pick a script. Output appears below and in the browser console (press <b>F12</b> → Console).</p>
+  <div id="buttons"></div>
+  <h3 id="title">Output</h3>
+  <pre id="output">Choose a script above to run it.</pre>
+  <small>Scripts using prompt() will open a dialog box.</small>
+
+<script>
+  const scripts = {
+    assignment1: "Assignment 1: Variables",
+    assignment2: "Assignment 2: Operators & Input",
+    assignment3: "Assignment 3: Conditionals",
+    assignment4: "Assignment 4: Loops",
+    assignment5: "Assignment 5: Functions & Scope",
+    assignment6: "Assignment 6: Arrays & Objects",
+    capstone: "Capstone Project"
+  };
+  const selected = new URLSearchParams(location.search).get("script");
+  const buttons = document.getElementById("buttons");
+
+  for (const key in scripts) {
+    const b = document.createElement("button");
+    b.textContent = scripts[key];
+    if (key === selected) b.classList.add("active");
+    // Reloading the page gives each run a clean slate (no "already declared" errors)
+    b.onclick = () => { location.search = "?script=" + key; };
+    buttons.appendChild(b);
+  }
+
+  if (scripts[selected]) {
+    const out = document.getElementById("output");
+    document.getElementById("title").textContent = scripts[selected];
+    out.textContent = "";
+    const originalLog = console.log;
+    console.log = (...args) => { out.textContent += args.join(" ") + "\n"; originalLog(...args); };
+
+    const s = document.createElement("script");
+    s.src = "scripts/" + selected + ".js";
+    document.body.appendChild(s);
+  }
+</script>
+</body>
+</html>
